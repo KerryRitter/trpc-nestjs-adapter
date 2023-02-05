@@ -3,7 +3,10 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost, ModuleRef } from '@nestjs/core';
 import { attachTrpcToExpressApp } from './attach-trpc-to-express-app';
-import { TRPC_CREATE_CONTEXT_TOKEN, TRPC_PATH_TOKEN, TRPC_ROUTER_TOKEN } from './tokens';
+import { createRouter } from './decorators';
+import {
+  TRPC_CREATE_CONTEXT_TOKEN, TRPC_PATH_TOKEN, TRPC_ROUTER_TOKEN,
+} from './tokens';
 import { TrpcModuleOptions } from './trpc-module-options.type';
 
 @Module({})
@@ -15,7 +18,7 @@ export class TrpcModule implements OnModuleInit {
   private readonly httpAdapterHost!: HttpAdapterHost;
 
   @Inject(TRPC_ROUTER_TOKEN)
-  private readonly router!: TrpcModuleOptions['router'];
+  private readonly router!: ReturnType<typeof createRouter>;
 
   @Inject(TRPC_PATH_TOKEN)
   private readonly path!: TrpcModuleOptions['path'];
@@ -24,14 +27,14 @@ export class TrpcModule implements OnModuleInit {
   private readonly createContext!: TrpcModuleOptions['createContext'];
 
   static forRoot(options: TrpcModuleOptions): DynamicModule {
-    if (!options.createContext || !options.path || !options.router) {
+    if (!options.createContext || !options.path) {
       throw new Error('Please supply all of the required options to TrpcModule');
     }
 
     return {
       module: TrpcModule,
       providers: [
-        { provide: TRPC_ROUTER_TOKEN, useValue: options.router },
+        { provide: TRPC_ROUTER_TOKEN, useValue: createRouter(options.factory) },
         { provide: TRPC_PATH_TOKEN, useValue: options.path },
         { provide: TRPC_CREATE_CONTEXT_TOKEN, useValue: options.createContext },
       ],
@@ -39,7 +42,6 @@ export class TrpcModule implements OnModuleInit {
   }
 
   onModuleInit() {
-    this.moduleRef.create
     attachTrpcToExpressApp({
       moduleRef: this.moduleRef,
       expressApp: this.httpAdapterHost.httpAdapter.getInstance(),

@@ -1,7 +1,7 @@
-import { AnyRouter } from '@trpc/server';
+import { createDefaultTrpc } from './decorators';
 
-export interface TrpcModuleOptions<TRouter = AnyRouter> {
+export interface TrpcModuleOptions {
+  factory?: typeof createDefaultTrpc;
   path: '/trpc' | string;
-  router: TRouter;
   createContext: () => any;
 }

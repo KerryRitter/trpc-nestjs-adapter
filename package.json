@@ -26,7 +26,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "lint": "eslint --ext .ts src/"
+    "lint": "eslint --ext .ts src/",
+    "start": "node ./dist/test/main"
   },
   "peerDependencies": {
     "@nestjs/common": "^9.2.1",
@@ -36,7 +37,6 @@
     "reflect-metadata": "^0.1.12",
     "rxjs": "^7.1.0"
   },
-  "dependencies": {},
   "devDependencies": {
     "@types/node": "^16.0.0",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
@@ -46,7 +46,8 @@
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-plugin-import": "^2.25.2",
     "nodemon": "^2.0.20",
-    "typescript": "^4.9.4"
+    "typescript": "^4.9.4",
+    "zod": "^3.20.2"
   },
   "files": [
     "dist"
